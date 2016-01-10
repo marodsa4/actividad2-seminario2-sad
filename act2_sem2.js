@@ -1,18 +1,27 @@
 var http = require('http');
 var fs = require('fs');
+var url = require('url');
+var path = require('path');
 
 http.createServer(function (request, response) {
-    // var fichero = 'HelloWorlxczcd.txt'; // para que salte error
-    var fichero = 'HelloWorld.txt';
+    // Recoger el fichero que se solicita
+    var fichero = url.parse(request.url).pathname;
+    // Los ficheros se guardan en la carpeta public
+    var public = 'public';
+    // Con process.cwd() se obtiene el directorio actual
+    var directorio_actual = process.cwd();
+    // Con path.join se unen los directorios para crear la ruta del fichero
+    var ruta = path.join(directorio_actual, public, fichero);
 
-	fs.readFile(fichero, function (error, datos_fichero) {
+    // Leer el fichero que se ha solicitado
+	fs.readFile(ruta, function (error, datos_fichero) {
         if (error) {
             response.write(error + "\n");
             response.end();
             console.log('Ha ocurrido un error: ' + error);
         }
         else {
-            response.writeHead(200, {'Content-Type': 'text/plain'});
+            response.writeHead(200, {'Content-Type': 'text/plain'}); // TO-DO
             response.end(datos_fichero);
             console.log('Fichero leido correctamente');
         }
